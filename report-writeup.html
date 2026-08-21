@@ -66,6 +66,14 @@
     width: auto !important;
     max-width: 100% !important;
   }
+  .caption {
+    font-size: 8.5pt;
+    font-style: italic;
+    color: #55595e;
+    text-align: center;
+    margin: -3pt 0 9pt 0;
+  }
+  .caption code { font-size: 8.3pt; }
   hr {
     border: none;
     border-top: 1px solid #d7dade;
@@ -116,11 +124,35 @@ sequenceDiagram
         C->>S: re-upload missing, retry commit
     end
 </pre>
+<p class="caption">Figure 1 — <code>single_file_transfer.py</code>: one file's transfer — local pre-diff, set-difference upload, self-verifying commit.</p>
 
 <p>Puts are idempotent (content-addressed) and the store is self-verifying, so this loop is also how the client survives a network drop mid-upload: reconnect and repeat the same query — no special resume path.</p>
 
 <h2>3. Requirements → mechanisms</h2>
 <p><strong>Change detection.</strong> Files are keyed by <code>path → (size, mtime_ns)</code>. Inode numbers are avoided (atomic save-via-rename allocates a new one); ctime is avoided (permission changes churn it, semantics vary by platform). Because mtime can lie — coarse filesystem granularity, clock skew — a file whose mtime sits within a guard window of the last verification is re-hashed rather than skipped; the content hash is the final arbiter. Events narrow the work, scans reconcile it.</p>
+
+<pre class="mermaid">
+sequenceDiagram
+    participant W as Watcher / scan
+    participant DB as StateDB
+    participant R as Runner
+    W->>DB: get(path)
+    DB-->>W: FileRec | None
+    W->>W: classify(rec, stat, now)
+    alt NEW / STAT_CHANGED / INTERRUPTED
+        W-->>R: Change(path, reason)
+        R->>R: sync_file(path)
+    else BOUNDARY (mtime within GUARD of last verify)
+        W->>W: re-read (content hash decides)
+        W-->>R: Change(path, BOUNDARY)
+    else provably unchanged
+        W-->>R: nothing (stat only, no read)
+    else in DB, gone from disk
+        W-->>R: Change(path, DELETED)
+        R->>DB: forget(path)
+    end
+</pre>
+<p class="caption">Figure 2 — <code>change_detection.py</code>: the <code>classify()</code> decision — stat-only in the common case, content re-read only at the guard boundary, and the sole detector of deletions.</p>
 <p><strong>Bandwidth efficiency.</strong> Four stacked reductions: unchanged files are skipped from metadata alone; changed files transfer only the chunks the server lacks; the <em>query</em> itself stays proportional to the change because the client diffs locally first (a naive ask-about-everything query on a 10&nbsp;GB file is ~1.3&nbsp;MB by itself); the residue is zstd-compressed, stacking with dedup rather than replacing it.</p>
 <p><strong>Reliability.</strong> Every step is idempotent or resumes from persisted state: a crash during chunking just re-chunks (local, cheap); after chunking, the manifest is persisted and the client skips straight to diffing; mid-upload, puts are idempotent so the client re-queries and continues; between upload and commit, the commit response names any chunk that raced a server-side collection. Two invariants keep this honest: the file is stat'd before <em>and</em> after chunking, abandoning the manifest if it moved (never commit a mix of two file generations); and resident memory equals <em>workers × max chunk size</em> regardless of file size, because manifests hold offsets, never bytes.</p>
 <p><strong>Integrity.</strong> Three verified layers: every chunk is verified server-side on write (a content-addressed store that trusts client-supplied keys is poisoned by one bad upload); the manifest pins ordering; the file hash over ordered chunk hashes lets the server prove end-to-end equality without ever assembling the file.</p>

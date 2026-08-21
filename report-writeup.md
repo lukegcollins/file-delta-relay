@@ -42,11 +42,37 @@ sequenceDiagram
     end
 ```
 
+*Figure 1 — `single_file_transfer.py`: one file's transfer — local pre-diff, set-difference upload, self-verifying commit.*
+
 Puts are idempotent (content-addressed) and the store is self-verifying, so this loop is also how the client survives a network drop mid-upload: reconnect and repeat the same query — no special resume path.
 
 ## 3. Requirements → mechanisms
 
 **Change detection.** Files are keyed by `path → (size, mtime_ns)`. Inode numbers are avoided (atomic save-via-rename allocates a new one); ctime is avoided (permission changes churn it, semantics vary by platform). Because mtime can lie — coarse filesystem granularity, clock skew — a file whose mtime sits within a guard window of the last verification is re-hashed rather than skipped; the content hash is the final arbiter. Events narrow the work, scans reconcile it.
+
+```mermaid
+sequenceDiagram
+    participant W as Watcher / scan
+    participant DB as StateDB
+    participant R as Runner
+    W->>DB: get(path)
+    DB-->>W: FileRec | None
+    W->>W: classify(rec, stat, now)
+    alt NEW / STAT_CHANGED / INTERRUPTED
+        W-->>R: Change(path, reason)
+        R->>R: sync_file(path)
+    else BOUNDARY (mtime within GUARD of last verify)
+        W->>W: re-read (content hash decides)
+        W-->>R: Change(path, BOUNDARY)
+    else provably unchanged
+        W-->>R: nothing (stat only, no read)
+    else in DB, gone from disk
+        W-->>R: Change(path, DELETED)
+        R->>DB: forget(path)
+    end
+```
+
+*Figure 2 — `change_detection.py`: the `classify()` decision — stat-only in the common case, content re-read only at the guard boundary, and the sole detector of deletions.*
 
 **Bandwidth efficiency.** Four stacked reductions: unchanged files are skipped from metadata alone; changed files transfer only the chunks the server lacks; the *query* itself stays proportional to the change because the client diffs locally first (a naive ask-about-everything query on a 10 GB file is ~1.3 MB by itself); the residue is zstd-compressed, stacking with dedup rather than replacing it.
 
