@@ -9,7 +9,7 @@ correctness depends on (verify-on-write, reference-validating commits).
 Everything here is validated by an end-to-end test that runs the **real**
 server and drives it with the **real** HTTP client — no Docker required for the
 proof. Docker only packages what that test already runs, adds a second server
-so failover can be shown, adds an Nginx front proxy for domain‑fronting
+so failover can be shown, adds an Nginx front proxy for domain-fronting
 simulation, and adds network emulation so the reliability story is visible
 rather than merely asserted.
 
@@ -17,10 +17,10 @@ rather than merely asserted.
 sync-demo/
 ├── server/            Flask server: content-addressed chunk store + RPCs
 │   └── app.py
-├── client/            the two assessed modules + the HTTP transport that
-│   ├── change_detection.py        makes `srv` real (with failover), plus
-│   ├── single_file_transfer.py    the run loop
-│   └── transport.py
+├── client/            the two assessed modules + the HTTP transport
+│   ├── change_detection.py        assessed module: the classify() kernel
+│   ├── single_file_transfer.py    assessed module: chunk + upload one file
+│   └── transport.py               HTTP client with multi-server failover + run loop
 ├── scenarios/
 │   ├── 01_normal_sync.sh          change detection · bandwidth · integrity · delete
 │   ├── 02_interrupted_resume.sh   reliability: interrupt + resume under tc/netem
@@ -239,12 +239,12 @@ the Nginx front proxy.
 ## Run it in Docker with network emulation
 
 ```bash
-./certs/gen_certs.sh                         # once: demo CA + server cert
-docker compose up --build                    # terminal 1: 2 servers + Nginx + client, TLS
-./scenarios/01_normal_sync.sh                    # terminal 2
-./scenarios/02_interrupted_resume.sh              # terminal 2
-./scenarios/03_failover_and_blackout.sh   # terminal 2 (~6 min; stops/starts primary)
-./scenarios/04_stealth_mode.sh                  # optional: source deletion + domain fronting
+./certs/gen_certs.sh                     # once: demo CA + server cert
+docker compose up --build                # terminal 1: 2 servers + Nginx + client, TLS
+./scenarios/01_normal_sync.sh            # terminal 2
+./scenarios/02_interrupted_resume.sh     # terminal 2
+./scenarios/03_failover_and_blackout.sh  # terminal 2 (~6 min; stops/starts primary)
+./scenarios/04_stealth_mode.sh           # optional: source deletion + domain fronting
 ```
 
 Drop files into `./sync-root/` and the client (polling with randomised
@@ -291,7 +291,7 @@ An Nginx container (`front-proxy`) is also started. It terminates TLS for the
 domain `innocent-front.example.com` and proxies to the two backends over
 HTTPS. The `04_stealth_mode.sh` scenario uses this front as the target, while
 the normal client continues to use the backends directly. This simulates a
-domain‑fronting arrangement without changing the client’s normal behaviour.
+domain-fronting arrangement without changing the client's normal behaviour.
 The Nginx configuration is in `nginx/nginx.conf`; it verifies the upstream
 certificate against the shared demo CA (`proxy_ssl_verify on`, with
 `proxy_ssl_name` pointed at the real backend hostname, since nginx checks
@@ -317,9 +317,10 @@ The server is a test counterpart, not a production service: chunk garbage
 collection is stubbed (it validates references on commit but never actually
 collects), authentication is opt-in and off by default (`SYNC_API_KEY`,
 above), the two servers do not replicate to each other, and manifests are
-versioned only to the extent the tombstone flag requires. The client modules are the assessed artifact; this harness exists
-to run them honestly under normal, adverse, and "covert‑ish" conditions. The
-stealth‑oriented features (API‑path mimicry, randomised polling, source
-deletion, domain‑fronting proxy) are **demonstrations only** — they do not
+versioned only to the extent the tombstone flag requires. The client
+modules are the assessed artifact; this harness exists to run them honestly
+under normal, adverse, and "covert-ish" conditions. The
+stealth-oriented features (API-path mimicry, randomised polling, source
+deletion, domain-fronting proxy) are **demonstrations only** — they do not
 make the system immune to a determined network monitor, and no real
-counter‑forensics or encryption beyond TLS is provided.
+counter-forensics or encryption beyond TLS is provided.

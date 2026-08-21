@@ -6,10 +6,10 @@ connection, and letting the server verify it received an exact copy.
 
 ## Submission contents
 
-- **`report-writeup.pdf`** (source: `report-writeup.md` / `report-writeup.html`)
-  — the 1–2 page design document: architectural approach, a sequence
-  diagram of the transfer protocol, and how each requirement (change
-  detection, bandwidth, reliability, integrity) is met.
+- **`report-writeup.md`** (also rendered as `report-writeup.html`) — the
+  1–2 page design document: architectural approach, a sequence diagram of
+  the transfer protocol, and how each requirement (change detection,
+  bandwidth, reliability, integrity) is met.
 - **`change_detection.py`** — how a file change is detected (a pure,
   unit-tested decision kernel over file metadata; symlinked from
   `sync-demo/client/change_detection.py`).
