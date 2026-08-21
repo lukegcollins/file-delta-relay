@@ -1,0 +1,16 @@
+# local dev environment
+.venv/
+__pycache__/
+*.pyc
+
+# demo state — regenerated on every run
+sync-root/
+test-state/
+
+# throwaway TLS material (gen_certs.sh recreates it; never commit keys)
+certs/*.crt
+certs/*.key
+certs/*.srl
+
+# demo runner output
+reports/

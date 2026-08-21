@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>File Synchronization Utility — Design Document</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.8/dist/mermaid.min.js"
+        integrity="sha384-N3QqR/7q+xm3BGX+CBbNI8AUmRRqcsDzToy+0z1NLDI0QmTKW8zvwLvqulJgk3dP"
+        crossorigin="anonymous"></script>
+<style>
+  @page { size: Letter; margin: 0.62in 0.68in; }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 10.3pt;
+    line-height: 1.42;
+    color: #14171a;
+  }
+  h1 {
+    font-size: 15.5pt;
+    margin: 0 0 3pt 0;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-size: 9pt;
+    color: #55595e;
+    font-style: italic;
+    margin: 0 0 11pt 0;
+  }
+  h2 {
+    font-size: 11.3pt;
+    margin: 13pt 0 5pt 0;
+    padding-bottom: 2pt;
+    border-bottom: 1px solid #d7dade;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+  }
+  h2:first-of-type { margin-top: 2pt; }
+  p { margin: 0 0 7pt 0; text-align: left; }
+  strong { font-weight: 700; }
+  code {
+    font-family: "SF Mono", Consolas, Menlo, monospace;
+    font-size: 9.3pt;
+    background: #f2f3f5;
+    padding: 0.5pt 3pt;
+    border-radius: 3px;
+  }
+  .pipeline {
+    font-family: "SF Mono", Consolas, Menlo, monospace;
+    font-size: 9pt;
+    background: #f6f7f8;
+    border: 1px solid #e3e5e8;
+    border-radius: 4px;
+    padding: 5pt 9pt;
+    margin: 4pt 0 8pt 0;
+    text-align: center;
+    color: #2a2d31;
+  }
+  .mermaid {
+    text-align: center;
+    margin: 3pt 0 8pt 0;
+  }
+  .mermaid svg {
+    max-height: 2.55in !important;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid #d7dade;
+    margin: 11pt 0 7pt 0;
+  }
+  .footer-note {
+    font-size: 8.7pt;
+    font-style: italic;
+    color: #55595e;
+    margin: 0;
+  }
+  .footer-note code { font-size: 8.5pt; }
+</style>
+</head>
+<body>
+
+<h1>File Synchronization Utility — Design Document</h1>
+<p class="subtitle">Client-side design. The server application exists and is under our control; it appears here only through its client-visible contract.</p>
+
+<h2>1. Framing and the key decision</h2>
+<p>Three of the four requirements admit inexpensive mechanisms: change detection is a local state database checked against file metadata; reliability is a resumable upload; integrity is a server-side hash check. Bandwidth efficiency is the requirement that shapes the architecture, and it does so under an assumption worth stating explicitly: <strong>large files tend to change partially</strong>. Given that assumption, the design is a content-addressed chunk store with per-file manifests, fed by content-defined chunking (FastCDC) on the client.</p>
+<p>One mechanism then pays three requirements. Chunk-level deduplication against everything the server already holds serves bandwidth: only genuinely new bytes cross the wire — across versions, across files, and across renames (a rename becomes a metadata-only commit). Content-addressed uploads are idempotent, so resuming after a network failure is not a protocol feature but a repeated set-difference query — reliability falls out. Defining a file's identity as the hash of its ordered chunk hashes gives the server end-to-end verification by set membership plus one small hash, without ever re-reading assembled bytes — integrity falls out. Small files degenerate to a single chunk inside the same pipeline, so there is one design rather than a small-file mode and a large-file mode.</p>
+<p>The honest cost is not the chunker (a gear-hash FastCDC is small) but operating the store: reference counting, garbage collection, verify-on-write. That cost is accepted deliberately, and it is partly unavoidable — any resumable upload chunks files anyway (S3 multipart is fixed-size chunking added purely for reliability); content-defined chunking merely makes the resume units deduplication-friendly.</p>
+
+<h2>2. Client architecture</h2>
+<div class="pipeline">watcher&nbsp;&nbsp;→&nbsp;&nbsp;state DB (SQLite)&nbsp;&nbsp;→&nbsp;&nbsp;chunker&nbsp;&nbsp;→&nbsp;&nbsp;uploader&nbsp;&nbsp;⇄&nbsp;&nbsp;server&nbsp;&nbsp;→&nbsp;&nbsp;committer</div>
+<p>The client is a pipeline of five independently restartable stages around a SQLite database (WAL mode) holding <code>files(path, size, mtime_ns, file_hash, manifest, state)</code> with states <code>dirty → chunked → synced</code>. A <strong>watcher</strong> consumes OS file events (inotify/FSEvents/USN) to narrow work to changed paths; a periodic scan reconciles missed events and detects deletions — the database, not the watcher, is the source of truth. The <strong>chunker</strong> runs FastCDC (64&nbsp;KB min / 256&nbsp;KB avg / 1&nbsp;MB max) over dirty files and persists only <code>(offset, length, BLAKE3)</code> triples — chunk data is never retained. The persisted manifest is the resume point: a crash after chunking skips straight to upload.</p>
+<p>The <strong>uploader</strong> first diffs the new manifest against the previously-synced one locally, asks the server only about hashes it has never sent, then a bounded worker pool re-reads each missing chunk by offset, compresses it with zstd, and uploads with jittered retries. The <strong>committer</strong> publishes the manifest; the server validates every referenced chunk still exists and returns any collected in the interim for re-upload and retry:</p>
+
+<pre class="mermaid">
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C->>C: stat + FastCDC chunk (offset,len,hash only)
+    C->>C: diff vs. last-synced manifest (local)
+    C->>S: get_missing_chunks(new hashes)
+    S-->>C: missing subset
+    loop each missing chunk
+        C->>S: put_chunk(hash, zstd bytes)
+        S->>S: decompress, verify BLAKE3
+        S-->>C: 204 ok / 409 mismatch
+    end
+    C->>S: commit_file(path, file_hash, chunk_hashes)
+    alt all refs present
+        S-->>C: ok
+    else refs missing (GC race / never sent here)
+        S-->>C: missing[]
+        C->>S: re-upload missing, retry commit
+    end
+</pre>
+
+<p>Puts are idempotent (content-addressed) and the store is self-verifying, so this loop is also how the client survives a network drop mid-upload: reconnect and repeat the same query — no special resume path.</p>
+
+<h2>3. Requirements → mechanisms</h2>
+<p><strong>Change detection.</strong> Files are keyed by <code>path → (size, mtime_ns)</code>. Inode numbers are avoided (atomic save-via-rename allocates a new one); ctime is avoided (permission changes churn it, semantics vary by platform). Because mtime can lie — coarse filesystem granularity, clock skew — a file whose mtime sits within a guard window of the last verification is re-hashed rather than skipped; the content hash is the final arbiter. Events narrow the work, scans reconcile it.</p>
+<p><strong>Bandwidth efficiency.</strong> Four stacked reductions: unchanged files are skipped from metadata alone; changed files transfer only the chunks the server lacks; the <em>query</em> itself stays proportional to the change because the client diffs locally first (a naive ask-about-everything query on a 10&nbsp;GB file is ~1.3&nbsp;MB by itself); the residue is zstd-compressed, stacking with dedup rather than replacing it.</p>
+<p><strong>Reliability.</strong> Every step is idempotent or resumes from persisted state: a crash during chunking just re-chunks (local, cheap); after chunking, the manifest is persisted and the client skips straight to diffing; mid-upload, puts are idempotent so the client re-queries and continues; between upload and commit, the commit response names any chunk that raced a server-side collection. Two invariants keep this honest: the file is stat'd before <em>and</em> after chunking, abandoning the manifest if it moved (never commit a mix of two file generations); and resident memory equals <em>workers × max chunk size</em> regardless of file size, because manifests hold offsets, never bytes.</p>
+<p><strong>Integrity.</strong> Three verified layers: every chunk is verified server-side on write (a content-addressed store that trusts client-supplied keys is poisoned by one bad upload); the manifest pins ordering; the file hash over ordered chunk hashes lets the server prove end-to-end equality without ever assembling the file.</p>
+
+<h2>4. Boundaries and trade-offs</h2>
+<p>Content-defined chunking earns its cost only when bytes shift <em>inside</em> large files; whole-file-rewrite workloads would do just as well with fixed-size chunks at less CPU, and append-only logs deserve a special case (track the synced offset, ship only the tail). Against rsync's rolling-checksum delta: rsync solves pairwise delta between two <em>known</em> copies (the server re-checksums on every transfer, and blocks shared across files or renames are re-sent); this design reduces the server to set membership, deduplicates globally, and makes resume a query — at the conceded cost that for one point edit, rsync's block size (≈√filesize) can move less data than one average chunk. Finally, under cross-account deduplication, <code>get_missing_chunks</code> becomes a confirmation oracle (does <em>anyone</em> hold this chunk?) — closed by per-account dedup namespaces or proof-of-possession.</p>
+
+<hr>
+<p class="footer-note">This is not just a design on paper: a full working reference implementation accompanies this document — the two code snippets requested (<code>change_detection.py</code>, <code>single_file_transfer.py</code>), an HTTP transport with multi-server failover, a matching server, an audited test suite, and a Docker-based demo with real network-fault injection (<code>sync-demo/</code>, see its <code>README.md</code> to run it).</p>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "loose",
+    themeVariables: { fontSize: "12px" } });
+</script>
+</body>
+</html>

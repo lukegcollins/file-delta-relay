@@ -1,0 +1,302 @@
+{
+  "endpoint_usage_share": {
+    "n": 20,
+    "tally": {
+      "primary": 10,
+      "secondary": 10,
+      "unresolved": 0
+    }
+  },
+  "failover": {
+    "health_samples": [
+      {
+        "t": 0.0005040168762207031,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 0.0005040168762207031,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 0.5318408012390137,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 0.5318408012390137,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 1.0585739612579346,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 1.0585739612579346,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 1.5866553783416748,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 1.5866553783416748,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 2.127516984939575,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 2.127516984939575,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 2.6710004806518555,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 2.6710004806518555,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 3.207379102706909,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 3.207379102706909,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 3.7381272315979004,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 3.7381272315979004,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 4.266939640045166,
+        "server": "primary",
+        "up": false
+      },
+      {
+        "t": 4.266939640045166,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 4.7893335819244385,
+        "server": "primary",
+        "up": false
+      },
+      {
+        "t": 4.7893335819244385,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 5.309189319610596,
+        "server": "primary",
+        "up": false
+      },
+      {
+        "t": 5.309189319610596,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 5.82635498046875,
+        "server": "primary",
+        "up": false
+      },
+      {
+        "t": 5.82635498046875,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 6.34667444229126,
+        "server": "primary",
+        "up": false
+      },
+      {
+        "t": 6.34667444229126,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 6.860921859741211,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 6.860921859741211,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 7.400320053100586,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 7.400320053100586,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 7.942820072174072,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 7.942820072174072,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 8.479907274246216,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 8.479907274246216,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 9.010164737701416,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 9.010164737701416,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 9.55025577545166,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 9.55025577545166,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 10.084694385528564,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 10.084694385528564,
+        "server": "secondary",
+        "up": true
+      }
+    ],
+    "events": [
+      {
+        "t": 0.006803989410400391,
+        "name": "file_created",
+        "file": "baseline"
+      },
+      {
+        "t": 3.137521505355835,
+        "name": "file_synced",
+        "file": "baseline",
+        "server": "primary",
+        "elapsed": 3.1307015419006348
+      },
+      {
+        "t": 4.532965183258057,
+        "name": "primary_stopped"
+      },
+      {
+        "t": 4.540001630783081,
+        "name": "file_created",
+        "file": "failover"
+      },
+      {
+        "t": 5.600802659988403,
+        "name": "file_synced",
+        "file": "failover",
+        "server": "secondary",
+        "elapsed": 1.060779094696045
+      },
+      {
+        "t": 6.146779298782349,
+        "name": "primary_started"
+      },
+      {
+        "t": 7.1919262409210205,
+        "name": "primary_health_restored",
+        "up": true
+      },
+      {
+        "t": 7.198314905166626,
+        "name": "file_created",
+        "file": "failback"
+      },
+      {
+        "t": 8.287760496139526,
+        "name": "file_synced",
+        "file": "failback",
+        "server": "secondary",
+        "elapsed": 1.089430332183838
+      }
+    ]
+  },
+  "network_sweep": [
+    {
+      "loss": "0%",
+      "delay": "0ms",
+      "size": 524288,
+      "completion_s": 4.21950626373291,
+      "converged": true
+    },
+    {
+      "loss": "10%",
+      "delay": "50ms",
+      "size": 524288,
+      "completion_s": 7.372490644454956,
+      "converged": true
+    },
+    {
+      "loss": "10%",
+      "delay": "100ms",
+      "size": 524288,
+      "completion_s": 10.446299076080322,
+      "converged": true
+    },
+    {
+      "loss": "30%",
+      "delay": "100ms",
+      "size": 524288,
+      "completion_s": 90,
+      "converged": false
+    },
+    {
+      "loss": "20%",
+      "delay": "200ms",
+      "size": 524288,
+      "completion_s": 39.99261713027954,
+      "converged": true
+    }
+  ]
+}

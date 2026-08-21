@@ -1,0 +1,11 @@
+== endpoint usage share (20 files, both servers healthy) ==
+   {'n': 20, 'tally': {'primary': 10, 'secondary': 10, 'unresolved': 0}}
+== failover / failback sequence ==
+   9 events, 40 health samples
+== network emulation sweep ==
+   loss=  0% delay=  0ms -> 4.2s
+   loss= 10% delay= 50ms -> 7.4s
+   loss= 10% delay=100ms -> 10.4s
+   loss= 30% delay=100ms -> TIMEOUT
+   loss= 20% delay=200ms -> 40.0s
+wrote /home/luke-collins/Documents/ASD/file-delta-relay/sync-demo/evidence/docker_metrics.json

@@ -1,0 +1,18 @@
+== baseline ==
+primary:   {"chunks":0,"files":0,"tombstones":0}
+secondary: {"chunks":0,"files":0,"tombstones":0}
+== 1. create two files ==
+primary:   {"chunks":2,"files":1,"tombstones":0}
+secondary: {"chunks":1,"files":1,"tombstones":0}
+server holds both files and their chunks.
+== 2. edit notes.txt (append one line) ==
+chunks before=3 after=4  (+1: only notes.txt was re-processed (change detection) — blob.bin was untouched; a same-store edit adds just the changed chunk, a re-homed one lands the file on the other store)
+== 3. rename blob.bin -> archive.bin (no content change) ==
+chunks before=4 after=7  (dedup: rename re-homed 3 existing chunk(s) to the other, non-replicating store — same hashes, no new content)
+== 4. verify integrity: server bytes == local bytes ==
+OK: server copy of archive.bin is byte-identical (on primary or secondary)
+== 5. delete notes.txt ==
+primary:   {"chunks":3,"files":0,"tombstones":2}
+secondary: {"chunks":4,"files":2,"tombstones":0}
+tombstones should have incremented; live files decremented.
+== done ==
