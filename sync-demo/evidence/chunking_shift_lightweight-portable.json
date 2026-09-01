@@ -1,0 +1,27 @@
+{
+  "chunker": {
+    "strategy": "fixed-size",
+    "chunk_size": 262144,
+    "detail": "fixed 256 KiB"
+  },
+  "file_size": 8388608,
+  "edit_size": 51200,
+  "edits": {
+    "overwrite": {
+      "chunks_after": 32,
+      "chunks_resent": 1,
+      "pct_of_file_resent": 3.1
+    },
+    "append": {
+      "chunks_after": 33,
+      "chunks_resent": 1,
+      "pct_of_file_resent": 3.0
+    },
+    "insert": {
+      "chunks_after": 33,
+      "chunks_resent": 33,
+      "pct_of_file_resent": 100.0
+    }
+  },
+  "baseline_chunks": 32
+}

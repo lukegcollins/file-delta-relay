@@ -1,0 +1,9 @@
+== 1. create a file to sync (and delete locally) ==
+== 2. run one-off client with SYNC_DELETE_AFTER=true ==
+[client] serving ['/data/sync'] -> ['https://front-proxy:443']
+[client] synced=8 deleted=0
+== 3. verify local file was deleted ==
+OK: local file removed after sync
+== 4. verify server has the file ==
+OK: server copy byte‑identical
+== stealth mode scenario passed ==

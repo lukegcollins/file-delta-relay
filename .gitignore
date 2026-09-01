@@ -1,0 +1,3 @@
+# editor / tool session state, not project files
+.claude/
+.vscode/

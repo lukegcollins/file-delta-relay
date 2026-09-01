@@ -1,0 +1,4 @@
+requests==2.33.1
+fastcdc==1.7.0
+blake3==1.0.9
+zstandard==0.25.0

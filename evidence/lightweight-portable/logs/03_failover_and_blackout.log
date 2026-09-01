@@ -1,0 +1,19 @@
+== 1. both servers healthy? ==
+   primary=https://localhost:8000 secondary=https://localhost:8001 both answer /v1/health
+== 2. baseline: a 1 MB file syncs (client picks either server) ==
+   initial.bin synced (on whichever server the client chose)
+== 3. failover: stop the primary, drop in a 2 MB file ==
+   primary stopped
+   Failover to secondary succeeded: failover.bin byte-identical on secondary
+== 4. failback: restart the primary, wait for it to come back, drop in another file ==
+   primary started; waiting for it to answer /v1/health again
+   primary healthy again
+   Failback to primary succeeded: failback.bin byte-identical on primary
+   (failover.bin lives on the secondary only - the servers do not replicate)
+== 5. degraded link: 10% loss + 100 ms delay, 3 MB file ==
+   degraded.bin converged (on https://localhost:8001) in 25s
+== 6. blackout: 6 MB file, 100% loss for 60 s mid-transfer, then recover ==
+   link cut; the client is retrying with backoff - watch: docker logs -f sync-client
+   link restored (5% loss); waiting for the resumed upload to finish
+   blackout.bin converged (on https://localhost:8001) from persisted state
+== done: failover, failback, degraded link and blackout all converged ==

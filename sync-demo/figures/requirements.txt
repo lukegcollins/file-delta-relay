@@ -1,0 +1,12 @@
+# Host-side figure rendering only (figures/make_figures.py).
+#
+# Like evidence/requirements.txt, deliberately separate from client/ and server/
+# requirements: nothing here ever enters a container or runs as part of the sync
+# utility. It exists to turn the *.mmd sequence diagrams into matched-size PNGs
+# for the design document.
+#
+# Also needed, and not installable from PyPI:
+#   - mermaid.min.js   npm install mermaid   (or point $MERMAID_JS at a copy)
+#   - a Chromium build. Set $CHROMIUM to an existing Google Chrome or Chromium
+#     binary to skip playwright's own ~150 MB browser download.
+playwright==1.58.0

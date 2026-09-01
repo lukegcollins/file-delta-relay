@@ -1,0 +1,10 @@
+== 1. degrade the link: 30% packet loss + 100ms delay ==
+== 2. drop in a 12 MB file to sync over the bad link ==
+== 3. mid-transfer, cut the network entirely for 6s ==
+   (100% loss now; the client is retrying with backoff -- watch its logs)
+== 4. restore the degraded-but-usable link ==
+   client should reconnect, re-query missing chunks, and finish.
+== 5. wait for convergence, then verify ==
+OK after 16 checks: server copy byte-identical.
+chunks stored total=80 (delta this run=71);
+no chunk was stored twice -- idempotent content-addressed puts.

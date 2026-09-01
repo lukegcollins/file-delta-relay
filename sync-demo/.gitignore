@@ -1,0 +1,27 @@
+# local dev environment
+.venv/
+# Figure rendering gets its own venv rather than sharing .venv: playwright ships
+# a bundled node driver binary, and .venv is deliberately kept as a live
+# demonstration that this branch installs no compiled wheels.
+.venv-figures/
+__pycache__/
+*.pyc
+.hypothesis/
+
+# demo state - regenerated on every run.
+# Anchored with a leading slash so these patterns match only the directories at
+# the top of sync-demo/, not a same-named directory anywhere below it: an
+# unanchored `reports/` would also swallow, say, evidence/<branch>/reports/.
+/sync-root/
+/test-state/
+/reports/
+
+# throwaway TLS material (gen_certs.sh recreates it; never commit keys)
+certs/*.crt
+certs/*.key
+certs/*.srl
+
+# host-side figure rendering. package.json / package-lock.json ARE committed so
+# the mermaid version that produced the checked-in PNGs is pinned and
+# reproducible; the 64 MB install tree is not.
+figures/node_modules/

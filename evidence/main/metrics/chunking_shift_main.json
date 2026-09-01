@@ -1,0 +1,27 @@
+{
+  "chunker": {
+    "strategy": "content-defined",
+    "chunk_size": 262144,
+    "detail": "content-defined (fastcdc)"
+  },
+  "file_size": 8388608,
+  "edit_size": 51200,
+  "edits": {
+    "overwrite": {
+      "chunks_after": 34,
+      "chunks_resent": 3,
+      "pct_of_file_resent": 8.8
+    },
+    "append": {
+      "chunks_after": 33,
+      "chunks_resent": 1,
+      "pct_of_file_resent": 3.0
+    },
+    "insert": {
+      "chunks_after": 33,
+      "chunks_resent": 1,
+      "pct_of_file_resent": 3.0
+    }
+  },
+  "baseline_chunks": 33
+}

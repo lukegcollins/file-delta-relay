@@ -1,0 +1,8 @@
+# Host-side plot rendering only (evidence/make_plots.py).
+#
+# Deliberately NOT in client/requirements.txt or server/requirements.txt: those
+# two files are the branch's headline claim (requests only / flask only), and
+# adding anything to them would both dilute that claim and invalidate the Docker
+# build cache for every image. matplotlib never runs inside a container -- it
+# renders the figures on the host, after the evidence run.
+matplotlib==3.11.1

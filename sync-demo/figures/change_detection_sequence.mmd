@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant W as Watcher / scan
+    participant DB as StateDB
+    participant R as Runner
+    W->>DB: get(path)
+    DB-->>W: FileRec | None
+    W->>W: classify(rec, stat, now)
+    alt NEW / STAT_CHANGED / INTERRUPTED
+        W-->>R: Change(path, reason)
+        R->>R: sync_file(path)
+    else BOUNDARY (mtime within GUARD of last verify)
+        W->>W: re-read (content hash decides)
+        W-->>R: Change(path, BOUNDARY)
+    else provably unchanged
+        W-->>R: nothing (stat only, no read)
+    else in DB, gone from disk
+        W-->>R: Change(path, DELETED)
+        R->>DB: forget(path)
+    end
