@@ -1,0 +1,3 @@
+# Only the web framework is a third-party dependency. Verification hashing
+# (blake2b) and decompression (zlib) are both Python standard library.
+flask==3.1.3

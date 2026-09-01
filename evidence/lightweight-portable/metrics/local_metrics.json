@@ -1,0 +1,145 @@
+{
+  "events": [
+    {
+      "t": 0.5773882865905762,
+      "type": "baseline",
+      "chunks": 0
+    },
+    {
+      "t": 0.5787646770477295,
+      "type": "create",
+      "paths": [
+        "notes.txt",
+        "blob.bin"
+      ],
+      "sizes": [
+        6000,
+        3145728
+      ]
+    },
+    {
+      "t": 0.7573049068450928,
+      "type": "sync_done",
+      "chunks": 13,
+      "op": "initial_sync_2_files"
+    },
+    {
+      "t": 0.781440019607544,
+      "type": "no_op_pass",
+      "chunks": 13
+    },
+    {
+      "t": 0.7904901504516602,
+      "type": "edit",
+      "path": "blob.bin",
+      "bytes_changed": 50000
+    },
+    {
+      "t": 0.9168920516967773,
+      "type": "sync_done",
+      "chunks": 14,
+      "op": "edit_blob_50kb"
+    },
+    {
+      "t": 0.9169645309448242,
+      "type": "rename",
+      "src": "blob.bin",
+      "dst": "archive.bin"
+    },
+    {
+      "t": 1.0271072387695312,
+      "type": "sync_done",
+      "chunks": 14,
+      "op": "rename_no_content_change"
+    },
+    {
+      "t": 1.0272033214569092,
+      "type": "delete",
+      "path": "notes.txt"
+    },
+    {
+      "t": 1.0740430355072021,
+      "type": "sync_done",
+      "chunks": 14,
+      "tombstones": 2,
+      "op": "delete_notes"
+    },
+    {
+      "t": 1.1249971389770508,
+      "type": "create",
+      "paths": [
+        "big.bin"
+      ],
+      "sizes": [
+        6291456
+      ]
+    },
+    {
+      "t": 17.79758381843567,
+      "type": "resume_interrupted",
+      "t_start": 1.1250121593475342,
+      "t_drop": 17.774731159210205,
+      "chunks_sent": 3,
+      "server_chunks": 17
+    },
+    {
+      "t": 20.683055639266968,
+      "type": "resume_completed",
+      "t_start": 20.297767639160156,
+      "t_end": 20.65531897544861,
+      "server_chunks": 38
+    }
+  ],
+  "bandwidth": [
+    {
+      "op": "initial_sync_2_files",
+      "bytes_read": 3151728,
+      "bytes_uploaded": 3146830,
+      "chunks_uploaded": 13
+    },
+    {
+      "op": "no_op_pass",
+      "bytes_read": 0,
+      "bytes_uploaded": 0,
+      "chunks_uploaded": 0
+    },
+    {
+      "op": "edit_blob_50kb",
+      "bytes_read": 3145728,
+      "bytes_uploaded": 262230,
+      "chunks_uploaded": 1
+    },
+    {
+      "op": "rename_no_content_change",
+      "bytes_read": 3145728,
+      "bytes_uploaded": 0,
+      "chunks_uploaded": 0
+    },
+    {
+      "op": "delete_notes",
+      "bytes_read": 0,
+      "bytes_uploaded": 0,
+      "chunks_uploaded": 0
+    },
+    {
+      "op": "resume_pass1_interrupted",
+      "bytes_read": 6291456,
+      "bytes_uploaded": 786690,
+      "chunks_uploaded": 3
+    },
+    {
+      "op": "resume_pass2_completes",
+      "bytes_read": 6291456,
+      "bytes_uploaded": 5506830,
+      "chunks_uploaded": 21
+    }
+  ],
+  "resume": {
+    "file_size": 6291456,
+    "drop_after_chunks": 3,
+    "t_pass1_start": 1.1250121593475342,
+    "t_drop": 17.774731159210205,
+    "t_resume_start": 20.297767639160156,
+    "t_resume_end": 20.65531897544861
+  }
+}

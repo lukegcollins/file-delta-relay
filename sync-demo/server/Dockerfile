@@ -1,0 +1,14 @@
+FROM python:3.12-slim
+WORKDIR /app
+# curl backs the compose healthcheck (python:*-slim does not ship it).
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+# requirements.txt is deliberately minimal (flask only): verification
+# hashing and decompression use the standard library, so this image needs
+# no compiled-wheel build tooling and installs cleanly on locked-down hosts.
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .
+ENV SYNC_DATA_DIR=/data SYNC_PORT=8000
+EXPOSE 8000
+CMD ["python", "app.py"]

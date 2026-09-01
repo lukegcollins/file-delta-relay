@@ -1,0 +1,532 @@
+{
+  "endpoint_usage_share": {
+    "n": 20,
+    "tally": {
+      "primary": 9,
+      "secondary": 11,
+      "unresolved": 0
+    }
+  },
+  "failover": {
+    "health_samples": [
+      {
+        "t": 0.0003876686096191406,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 0.0003876686096191406,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 0.518104076385498,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 0.518104076385498,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 1.0445096492767334,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 1.0445096492767334,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 1.582763671875,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 1.582763671875,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 2.1385161876678467,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 2.1385161876678467,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 2.6809420585632324,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 2.6809420585632324,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 3.215404510498047,
+        "server": "primary",
+        "up": false
+      },
+      {
+        "t": 3.215404510498047,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 3.735574960708618,
+        "server": "primary",
+        "up": false
+      },
+      {
+        "t": 3.735574960708618,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 4.258136510848999,
+        "server": "primary",
+        "up": false
+      },
+      {
+        "t": 4.258136510848999,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 4.778254985809326,
+        "server": "primary",
+        "up": false
+      },
+      {
+        "t": 4.778254985809326,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 5.3051087856292725,
+        "server": "primary",
+        "up": false
+      },
+      {
+        "t": 5.3051087856292725,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 5.8223161697387695,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 5.8223161697387695,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 6.356640815734863,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 6.356640815734863,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 6.890699863433838,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 6.890699863433838,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 7.435280084609985,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 7.435280084609985,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 7.973786354064941,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 7.973786354064941,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 8.510671377182007,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 8.510671377182007,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 9.05231523513794,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 9.05231523513794,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 9.59644365310669,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 9.59644365310669,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 10.13743543624878,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 10.13743543624878,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 10.676339864730835,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 10.676339864730835,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 11.194750308990479,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 11.194750308990479,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 11.730360746383667,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 11.730360746383667,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 12.267174482345581,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 12.267174482345581,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 12.799945592880249,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 12.799945592880249,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 13.332389831542969,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 13.332389831542969,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 13.868674039840698,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 13.868674039840698,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 14.402282476425171,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 14.402282476425171,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 14.94867730140686,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 14.94867730140686,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 15.490492343902588,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 15.490492343902588,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 16.028303861618042,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 16.028303861618042,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 16.561864614486694,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 16.561864614486694,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 17.091763734817505,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 17.091763734817505,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 17.621021270751953,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 17.621021270751953,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 18.157798767089844,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 18.157798767089844,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 18.68553137779236,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 18.68553137779236,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 19.209920167922974,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 19.209920167922974,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 19.74275779724121,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 19.74275779724121,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 20.27463436126709,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 20.27463436126709,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 20.808913946151733,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 20.808913946151733,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 21.341071367263794,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 21.341071367263794,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 21.881492376327515,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 21.881492376327515,
+        "server": "secondary",
+        "up": true
+      },
+      {
+        "t": 22.419297218322754,
+        "server": "primary",
+        "up": true
+      },
+      {
+        "t": 22.419297218322754,
+        "server": "secondary",
+        "up": true
+      }
+    ],
+    "events": [
+      {
+        "t": 0.008356332778930664,
+        "name": "file_created",
+        "file": "baseline"
+      },
+      {
+        "t": 2.1013503074645996,
+        "name": "file_synced",
+        "file": "baseline",
+        "server": "primary",
+        "elapsed": 2.0929741859436035
+      },
+      {
+        "t": 3.528592348098755,
+        "name": "primary_stopped"
+      },
+      {
+        "t": 3.5336079597473145,
+        "name": "file_created",
+        "file": "failover"
+      },
+      {
+        "t": 4.579739570617676,
+        "name": "file_synced",
+        "file": "failover",
+        "server": "secondary",
+        "elapsed": 1.0461177825927734
+      },
+      {
+        "t": 5.091928958892822,
+        "name": "primary_started"
+      },
+      {
+        "t": 6.135002613067627,
+        "name": "primary_health_restored",
+        "up": true
+      },
+      {
+        "t": 6.140591144561768,
+        "name": "file_created",
+        "file": "failback"
+      },
+      {
+        "t": 20.757850885391235,
+        "name": "file_synced",
+        "file": "failback",
+        "server": "primary",
+        "elapsed": 14.617247343063354
+      }
+    ]
+  },
+  "network_sweep": [
+    {
+      "loss": "0%",
+      "delay": "0ms",
+      "size": 524288,
+      "completion_s": 2.0989859104156494,
+      "converged": true
+    },
+    {
+      "loss": "10%",
+      "delay": "50ms",
+      "size": 524288,
+      "completion_s": 6.333173990249634,
+      "converged": true
+    },
+    {
+      "loss": "10%",
+      "delay": "100ms",
+      "size": 524288,
+      "completion_s": 17.951473236083984,
+      "converged": true
+    },
+    {
+      "loss": "30%",
+      "delay": "100ms",
+      "size": 524288,
+      "completion_s": 90,
+      "converged": false
+    },
+    {
+      "loss": "20%",
+      "delay": "200ms",
+      "size": 524288,
+      "completion_s": 90,
+      "converged": false
+    }
+  ]
+}

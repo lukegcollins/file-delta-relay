@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C->>C: stat + fixed 256 KiB chunk (offset,len,hash only)
+    C->>C: diff vs. last-synced manifest (local)
+    C->>S: get_missing_chunks(new hashes)
+    S-->>C: missing subset
+    loop each missing chunk
+        C->>S: put_chunk(hash, zlib bytes)
+        S->>S: decompress, verify BLAKE2b
+        S-->>C: 204 ok / 409 mismatch
+    end
+    C->>S: commit_file(path, file_hash, chunk_hashes)
+    alt all refs present
+        S-->>C: ok
+    else refs missing (GC race / never sent here)
+        S-->>C: missing[]
+        C->>S: re-upload missing, retry commit
+    end

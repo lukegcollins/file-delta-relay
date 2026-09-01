@@ -1,0 +1,3 @@
+# Only network transport is a third-party dependency. Chunking, hashing
+# (blake2b) and compression (zlib) are all Python standard library.
+requests==2.33.1
